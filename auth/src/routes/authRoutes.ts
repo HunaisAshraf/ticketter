@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/user", getUser);
 router.post(
-  "/login",
+  "/signup",
   [
     body("email").isEmail().withMessage("Email must be valid"),
     body("password")
