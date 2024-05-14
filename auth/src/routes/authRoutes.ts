@@ -1,10 +1,11 @@
 import express from "express";
 import { body } from "express-validator";
-import { addUser, getUser } from "../controller/authController";
+import { addUser, getUser, loginUser, userLogOut } from "../controller/authController";
+import { requireAuth } from "../middleware/requireAuth";
 
 const router = express.Router();
 
-router.get("/user", getUser);
+router.get("/currentuser",requireAuth, getUser);
 router.post(
   "/signup",
   [
@@ -15,5 +16,14 @@ router.post(
   ],
   addUser
 );
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("Email must be valid"),
+    body("password").trim().notEmpty().withMessage("password must be provided"),
+  ],
+  loginUser
+);
+router.get("/logout",userLogOut)
 
 export default router;
