@@ -16,5 +16,13 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
-            
+    - image: hunais/client 
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.{js,jsx,ts,tsx,css,json}'
+            dest: .
+             
         

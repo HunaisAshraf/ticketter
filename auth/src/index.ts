@@ -19,7 +19,7 @@ app.use(
 );
 app.use(morgan("dev"));
 
-app.use("/api/auth", router);
+app.use("/api/users", router);
 app.use(errorHandler);
 
 app.listen(3000, () => {

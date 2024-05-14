@@ -77,7 +77,7 @@ export const loginUser = async (
     console.log(errors);
 
     if (!errors.isEmpty()) {
-      throw new Error(`Invalid email or password ${errors.array()}`);
+      throw new Error(`Invalid email or password`);
     }
 
     const { email, password } = req.body;
