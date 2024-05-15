@@ -4,15 +4,14 @@ import { UserModel } from "../models/userModel";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-export const getUser = async (req: Request, res: Response) => {
+interface AuthenticatedRequest extends Request {
+  user?: any;
+}
+
+export const getUser = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    if (!req.session?.jwt) {
-      return res.send({ currentUser: null });
-    }
-
-    const payload = jwt.verify(req.session.jwt, process.env.JWT_KEY!);
-
-    res.send({ currentUser: payload });
+    const user = await UserModel.findOne({ email: req.user.email });
+    res.send(user);
   } catch (error) {
     console.log(error);
     res.send({ currentUser: null });
@@ -50,14 +49,13 @@ export const addUser = async (
 
     await user.save();
 
-    const userJwt = jwt.sign(
-      { id: user._id, email: user.email },
-      process.env.JWT_KEY!
-    );
+    const tokenData = { id: user._id, email: user.email };
 
-    req.session = {
-      jwt: userJwt,
-    };
+    const token = jwt.sign(tokenData, process.env.JWT_KEY!, {
+      expiresIn: "1d",
+    });
+
+    res.cookie("token", token, { httpOnly: true });
 
     return res.status(200).send({ success: true, user });
   } catch (error) {
@@ -94,14 +92,13 @@ export const loginUser = async (
       throw new Error("password dosent match");
     }
 
-    const userJwt = jwt.sign(
-      { id: user._id, email: user.email },
-      process.env.JWT_KEY!
-    );
+    const tokenData = { id: user._id, email: user.email };
 
-    req.session = {
-      jwt: userJwt,
-    };
+    const token = jwt.sign(tokenData, process.env.JWT_KEY!, {
+      expiresIn: "1d",
+    });
+
+    res.cookie("token", token, { httpOnly: true });
 
     return res.status(200).send({
       success: true,
