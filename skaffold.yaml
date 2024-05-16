@@ -24,5 +24,13 @@ build:
         manual:
           - src: 'src/**/*.{js,jsx,ts,tsx,css,json}'
             dest: .
+    - image: hunais/tickets 
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
              
         
